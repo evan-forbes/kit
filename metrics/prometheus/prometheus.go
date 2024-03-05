@@ -45,6 +45,10 @@ func (c *Counter) Add(delta float64) {
 	c.cv.With(makeLabels(c.lvs...)).Add(delta)
 }
 
+func (c *Counter) Collector() prometheus.Collector {
+	return c.cv
+}
+
 // Gauge implements Gauge, via a Prometheus GaugeVec.
 type Gauge struct {
 	gv  *prometheus.GaugeVec
@@ -84,6 +88,10 @@ func (g *Gauge) Add(delta float64) {
 	g.gv.With(makeLabels(g.lvs...)).Add(delta)
 }
 
+func (g *Gauge) Collector() prometheus.Collector {
+	return g.gv
+}
+
 // Summary implements Histogram, via a Prometheus SummaryVec. The difference
 // between a Summary and a Histogram is that Summaries don't require predefined
 // quantile buckets, but cannot be statistically aggregated.
@@ -120,6 +128,10 @@ func (s *Summary) Observe(value float64) {
 	s.sv.With(makeLabels(s.lvs...)).Observe(value)
 }
 
+func (s *Summary) Collector() prometheus.Collector {
+	return s.sv
+}
+
 // Histogram implements Histogram via a Prometheus HistogramVec. The difference
 // between a Histogram and a Summary is that Histograms require predefined
 // quantile buckets, and can be statistically aggregated.
@@ -154,6 +166,10 @@ func (h *Histogram) With(labelValues ...string) metrics.Histogram {
 // Observe implements Histogram.
 func (h *Histogram) Observe(value float64) {
 	h.hv.With(makeLabels(h.lvs...)).Observe(value)
+}
+
+func (h *Histogram) Collector() prometheus.Collector {
+	return h.hv
 }
 
 func makeLabels(labelValues ...string) prometheus.Labels {
