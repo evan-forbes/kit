@@ -40,6 +40,14 @@ func (c *Counter) With(labelValues ...string) metrics.Counter {
 	}
 }
 
+// With implements Counter.
+func (c *Counter) WithP(labelValues ...string) metrics.PCounter {
+	return &Counter{
+		cv:  c.cv,
+		lvs: c.lvs.With(labelValues...),
+	}
+}
+
 // Add implements Counter.
 func (c *Counter) Add(delta float64) {
 	c.cv.With(makeLabels(c.lvs...)).Add(delta)
@@ -72,6 +80,13 @@ func NewGauge(gv *prometheus.GaugeVec) *Gauge {
 
 // With implements Gauge.
 func (g *Gauge) With(labelValues ...string) metrics.Gauge {
+	return &Gauge{
+		gv:  g.gv,
+		lvs: g.lvs.With(labelValues...),
+	}
+}
+
+func (g *Gauge) WithP(labelValues ...string) metrics.PGauge {
 	return &Gauge{
 		gv:  g.gv,
 		lvs: g.lvs.With(labelValues...),
@@ -157,6 +172,14 @@ func NewHistogram(hv *prometheus.HistogramVec) *Histogram {
 
 // With implements Histogram.
 func (h *Histogram) With(labelValues ...string) metrics.Histogram {
+	return &Histogram{
+		hv:  h.hv,
+		lvs: h.lvs.With(labelValues...),
+	}
+}
+
+// With implements Counter.
+func (h *Histogram) WithP(labelValues ...string) metrics.PHistogram {
 	return &Histogram{
 		hv:  h.hv,
 		lvs: h.lvs.With(labelValues...),

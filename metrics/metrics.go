@@ -14,6 +14,7 @@ type Counter interface {
 type PCounter interface {
 	Counter
 	Collector() prometheus.Collector
+	WithP(labelValues ...string) PCounter
 }
 
 // Gauge describes a metric that takes specific values over time.
@@ -27,6 +28,7 @@ type Gauge interface {
 type PGauge interface {
 	Gauge
 	Collector() prometheus.Collector
+	WithP(labelValues ...string) PGauge
 }
 
 // Histogram describes a metric that takes repeated observations of the same
@@ -41,4 +43,5 @@ type Histogram interface {
 type PHistogram interface {
 	Histogram
 	Collector() prometheus.Collector
+	WithP(labelValues ...string) PHistogram
 }
